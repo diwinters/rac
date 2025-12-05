@@ -7,14 +7,10 @@ export interface Admin {
 
 export interface Feed {
   id: string
-  uri: string
-  displayName: string
-  description?: string
-  avatar?: string
+  name: string
+  icon: string // Icon name or URL
   isPinned: boolean
-  isMandatory: boolean
   position: number
-  isEnabled: boolean
   createdAt: string
   updatedAt: string
 }

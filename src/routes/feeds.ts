@@ -32,22 +32,18 @@ feedRouter.get('/:id', (req, res) => {
 // Add new feed
 feedRouter.post('/', (req, res) => {
   try {
-    const {uri, displayName, description, avatar, isPinned, isMandatory, isEnabled} = req.body
+    const {name, icon, isPinned} = req.body
     
-    if (!uri || !displayName) {
-      return res.status(400).json({error: 'URI and displayName are required'})
+    if (!name) {
+      return res.status(400).json({error: 'Name is required'})
     }
     
     const feeds = getFeeds()
     const newFeed = addFeed({
-      uri,
-      displayName,
-      description,
-      avatar,
+      name,
+      icon: icon || 'hashtag',
       isPinned: isPinned ?? false,
-      isMandatory: isMandatory ?? false,
       position: feeds.length,
-      isEnabled: isEnabled ?? true,
     })
     
     res.status(201).json({feed: newFeed})
@@ -97,24 +93,6 @@ feedRouter.post('/:id/pin', (req, res) => {
     const {isPinned} = req.body
     
     const updated = updateFeed(id, {isPinned: isPinned ?? true})
-    
-    if (!updated) {
-      return res.status(404).json({error: 'Feed not found'})
-    }
-    
-    res.json({feed: updated})
-  } catch (error) {
-    res.status(500).json({error: 'Failed to update feed'})
-  }
-})
-
-// Set mandatory
-feedRouter.post('/:id/mandatory', (req, res) => {
-  try {
-    const {id} = req.params
-    const {isMandatory} = req.body
-    
-    const updated = updateFeed(id, {isMandatory: isMandatory ?? true})
     
     if (!updated) {
       return res.status(404).json({error: 'Feed not found'})

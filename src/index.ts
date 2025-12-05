@@ -49,6 +49,30 @@ app.get('/public/admin-dids', async (req, res) => {
   }
 })
 
+// Public route to get all feeds (for all users to see pinned feeds)
+app.get('/public/feeds', async (req, res) => {
+  try {
+    const {getFeeds} = await import('./store/feeds')
+    const feeds = getFeeds().sort((a, b) => a.position - b.position)
+    res.json({feeds})
+  } catch (error) {
+    res.status(500).json({error: 'Internal server error'})
+  }
+})
+
+// Public route to get only pinned feeds (for displaying in Home tabs)
+app.get('/public/pinned-feeds', async (req, res) => {
+  try {
+    const {getFeeds} = await import('./store/feeds')
+    const feeds = getFeeds()
+      .filter(f => f.isPinned)
+      .sort((a, b) => a.position - b.position)
+    res.json({feeds})
+  } catch (error) {
+    res.status(500).json({error: 'Internal server error'})
+  }
+})
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({status: 'ok'})
